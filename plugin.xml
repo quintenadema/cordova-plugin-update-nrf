@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-update-nrf" version="0.1.0">
+	<name>Update NRF</name>
+
+	<engines>
+		<engine name="cordova" version=">=9.0.0"/>
+		<engine name="cordova-android" version=">=8.0.0" />
+		<engine name="cordova-ios" version=">=5.0.0" />
+	</engines>
+
+	<js-module src="www/nordicUpdate.js" name="NordicUpdate">
+		<clobbers target="window.NordicUpdate" />
+	</js-module>
+
+	<platform name="android">
+		<config-file target="res/xml/config.xml" parent="/*">
+			<feature name="NordicUpdate">
+				<param name="android-package" value="com.ademagroup.NordicUpdate" />
+			</feature>
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<activity android:name="com.ademagroup.NotificationActivity" />
+			<service android:name="com.ademagroup.DfuService" />
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+			<uses-permission android:name="android.permission.BLUETOOTH"/>
+		</config-file>
+
+		<framework src="no.nordicsemi.android:dfu:2.0.0"/>
+		<framework src="androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04"/>
+
+		<source-file src="src/android/NordicUpdate.java" target-dir="src/com/ademagroup" />
+		<source-file src="src/android/DfuService.java" target-dir="src/com/ademagroup"/>
+		<source-file src="src/android/NotificationActivity.java" target-dir="src/com/ademagroup"/>
+	</platform>
+	<platform name="ios">
+		<config-file target="config.xml" parent="/widget">
+			<feature name="NordicUpdate">
+				<param name="ios-package" value="NordicUpdate" onload="true" />
+			</feature>
+		</config-file>
+
+		<header-file src="src/ios/NordicUpdate-Bridging-Header.h" />
+		<source-file src="src/ios/NordicUpdate.swift" />
+
+		<podspec>
+			<config>
+				<source url="https://github.com/CocoaPods/Specs.git"/>
+			</config>
+			<pods use-frameworks="true">
+				<pod name="iOSDFULibrary" spec="4.10.4" />
+			</pods>
+		</podspec>
+
+		<dependency id="cordova-plugin-add-swift-support" version="2.0.2"/>
+		<dependency id="cordova-plugin-file" version="^6.0.1" />
+	</platform>
+</plugin>

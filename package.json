@@ -1,0 +1,42 @@
+{
+	"version": "0.1.0",
+	"name": "cordova-plugin-nordic-update",
+	"description": "Use Nordic Semiconductor's Device Firmware Update (DFU) service to update a Bluetooth LE device",
+	"cordova": {
+		"id": "cordova-plugin-nordic-update",
+		"platforms": [
+			"android",
+			"ios"
+		]
+	},
+	"engines": {
+		"cordovaDependencies": {
+			"0.1.0": {
+				"cordova-android": "^9.0.0",
+				"cordova-ios": "^6.0.0",
+				"cordova": "^10.0.0"
+			}
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://TheBosZ@bitbucket.org/TheBosZ/cordova-plugin-nordic-update.git"
+	},
+	"keywords": [
+		"cordova",
+		"update",
+		"dfu",
+		"device",
+		"firmware",
+		"upgrade",
+		"ecosystem:cordova",
+		"cordova-android",
+		"cordova-ios"
+	],
+	"author": "Nathan Kerr",
+	"license": "Apache 2.0",
+	"bugs": {
+		"url": "https://bitbucket.org/TheBosZ/cordova-plugin-nordic-update/issues"
+	},
+	"homepage": "https://bitbucket.org/TheBosZ/cordova-plugin-nordic-update"
+}
