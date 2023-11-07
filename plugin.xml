@@ -51,7 +51,7 @@
 				<source url="https://github.com/CocoaPods/Specs.git"/>
 			</config>
 			<pods use-frameworks="true">
-				<pod name="iOSDFULibrary" spec="4.10.4" />
+				<pod name="iOSDFULibrary" spec="4.13.0" />
 			</pods>
 		</podspec>
 
