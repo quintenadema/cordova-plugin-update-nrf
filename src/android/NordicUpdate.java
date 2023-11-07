@@ -2,8 +2,6 @@ package com.ademagroup;
 
 import android.Manifest;
 import android.app.Activity;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.ProcessLifecycleOwner;
 import android.bluetooth.BluetoothAdapter;
 import android.net.Uri;
 import android.os.Build;
@@ -28,8 +26,6 @@ public class NordicUpdate extends CordovaPlugin {
 	private CallbackContext dfuCallback;
 	private Activity activity;
 	private String deviceAddress;
-
-	private boolean isInForeground;
 
 	private String fileURL;
 	private final String COARSE = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -57,11 +53,6 @@ public class NordicUpdate extends CordovaPlugin {
 				return true;
 			}
 
-			if (!ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-				callbackContext.error("App must be in the foreground to start DFU");
-				return true;
-			}
-
 			dfuCallback = callbackContext;
 			activity = cordova.getActivity();
 			deviceAddress = deviceId;
@@ -76,16 +67,6 @@ public class NordicUpdate extends CordovaPlugin {
 			return true;
 		}
 		return false;
-	}
-
-	public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults)
-			throws JSONException {
-
-		if (hasPerms()) {
-			updateFirmware();
-		} else {
-			this.dfuCallback.error("Permission denied");
-		}
 	}
 
 	private boolean hasPerms() {
@@ -110,7 +91,7 @@ public class NordicUpdate extends CordovaPlugin {
 			starter.setZip(fileUriStr);
 
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				DfuServiceInitiator.createDfuNotificationChannel(cordova.getContext());
+//				DfuServiceInitiator.createDfuNotificationChannel(cordova.getContext());
 			}
 
 			starter.start(activity, DfuService.class);
