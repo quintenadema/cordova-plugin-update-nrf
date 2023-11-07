@@ -70,7 +70,7 @@ public class NordicUpdate extends CordovaPlugin {
 		}
 
 		final DfuServiceInitiator starter = new DfuServiceInitiator(deviceAddress)
-			.setKeepBond(true)
+			.setKeepBond(false)
 			.setForceDfu(false)
 			.setPacketsReceiptNotificationsEnabled(true)
 			.setPacketsReceiptNotificationsValue(10)
