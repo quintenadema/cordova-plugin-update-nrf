@@ -29,7 +29,7 @@
 			<uses-permission android:name="android.permission.BLUETOOTH"/>
 		</config-file>
 
-		<framework src="no.nordicsemi.android:dfu:2.3.2"/>
+		<framework src="no.nordicsemi.android:dfu:2.0.0"/>
 		<framework src="androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04"/>
 
 		<source-file src="src/android/NordicUpdate.java" target-dir="src/com/ademagroup" />
