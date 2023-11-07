@@ -26,11 +26,7 @@ public class NordicUpdate extends CordovaPlugin {
 	private CallbackContext dfuCallback;
 	private Activity activity;
 	private String deviceAddress;
-
 	private String fileURL;
-	private final String COARSE = Manifest.permission.ACCESS_COARSE_LOCATION;
-	private final String BLUETOOTH = Manifest.permission.BLUETOOTH;
-	private final String[] permissions = { COARSE, BLUETOOTH };
 
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -57,52 +53,39 @@ public class NordicUpdate extends CordovaPlugin {
 			activity = cordova.getActivity();
 			deviceAddress = deviceId;
 			this.fileURL = fileURL;
-			if (hasPerms()) {
-				updateFirmware();
 
-			} else {
-				int REQUEST_PERMS_CODE = 234;
-				cordova.requestPermissions(this, REQUEST_PERMS_CODE, permissions);
-			}
+			updateFirmware();
 			return true;
 		}
 		return false;
 	}
 
-	private boolean hasPerms() {
-		return cordova.hasPermission(COARSE) && cordova.hasPermission(BLUETOOTH);
-	}
-
 	private void updateFirmware() {
+		CordovaResourceApi resourceApi = webView.getResourceApi();
+		Uri fileUriStr;
+		try {
+			fileUriStr = resourceApi.remapUri(Uri.parse(fileURL));
+		} catch (IllegalArgumentException e) {
+			fileUriStr = Uri.parse(fileURL);
+		}
 
-		cordova.getThreadPool().execute(() -> {
-			CordovaResourceApi resourceApi = webView.getResourceApi();
-			Uri fileUriStr;
-			try {
-				fileUriStr = resourceApi.remapUri(Uri.parse(fileURL));
-			} catch (IllegalArgumentException e) {
-				fileUriStr = Uri.parse(fileURL);
-			}
+		final DfuServiceInitiator starter = new DfuServiceInitiator(deviceAddress)
+			.setKeepBond(true)
+			.setForceDfu(false)
+			.setPacketsReceiptNotificationsEnabled(true)
+			.setPacketsReceiptNotificationsValue(10)
+			.setUnsafeExperimentalButtonlessServiceInSecureDfuEnabled(true)
+			.setDisableNotification(true);
 
-			final DfuServiceInitiator starter = new DfuServiceInitiator(deviceAddress).setKeepBond(false)
-					.setForceDfu(false).setPacketsReceiptNotificationsEnabled(true)
-					.setPacketsReceiptNotificationsValue(10)
-					.setUnsafeExperimentalButtonlessServiceInSecureDfuEnabled(true).setDisableNotification(true);
-			starter.setZip(fileUriStr);
+		starter.setZip(fileUriStr);
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//				DfuServiceInitiator.createDfuNotificationChannel(cordova.getContext());
-			}
+		starter.start(activity, DfuService.class);
 
-			starter.start(activity, DfuService.class);
+		PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+		result.setKeepCallback(true);
+		dfuCallback.sendPluginResult(result);
 
-			PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-			result.setKeepCallback(true);
-			dfuCallback.sendPluginResult(result);
-
-			DfuServiceListenerHelper.registerProgressListener(activity, progressListener, deviceAddress);
-		});
-
+		DfuServiceListenerHelper.registerProgressListener(activity, progressListener, deviceAddress);
 	}
 
 	private void unregisterDfuProgressListener() {
@@ -115,54 +98,44 @@ public class NordicUpdate extends CordovaPlugin {
 		public void onDeviceConnecting(String deviceAddress) {
 			sendDfuNotification("deviceConnecting");
 		}
-
 		@Override
 		public void onDeviceConnected(String deviceAddress) {
 			sendDfuNotification("deviceConnected");
 		}
-
 		@Override
 		public void onDfuProcessStarting(String deviceAddress) {
 			sendDfuNotification("dfuProcessStarting");
 		}
-
 		@Override
 		public void onDfuProcessStarted(String deviceAddress) {
 			sendDfuNotification("dfuProcessStarted");
 		}
-
 		@Override
 		public void onEnablingDfuMode(String deviceAddress) {
 			sendDfuNotification("enablingDfuMode");
 		}
-
 		@Override
 		public void onFirmwareValidating(String deviceAddress) {
 			sendDfuNotification("firmwareValidating");
 		}
-
 		@Override
 		public void onDeviceDisconnecting(String deviceAddress) {
 			sendDfuNotification("deviceDisconnecting");
 		}
-
 		@Override
 		public void onDeviceDisconnected(String deviceAddress) {
 			sendDfuNotification("deviceDisconnected");
 		}
-
 		@Override
 		public void onDfuCompleted(String deviceAddress) {
 			sendDfuNotification("dfuCompleted");
 			unregisterDfuProgressListener();
 		}
-
 		@Override
 		public void onDfuAborted(String deviceAddress) {
 			sendDfuNotification("dfuAborted");
 			unregisterDfuProgressListener();
 		}
-
 		@Override
 		public void onError(String deviceAddress, int error, int errorType, String message) {
 			JSONObject json = new JSONObject();
