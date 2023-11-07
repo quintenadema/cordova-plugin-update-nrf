@@ -1,4 +1,4 @@
-package com.fallingdeathgames;
+package com.ademagroup;
 
 import android.Manifest;
 import android.app.Activity;
