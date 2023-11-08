@@ -70,14 +70,14 @@ public class NordicUpdate extends CordovaPlugin {
 		}
 
 		final DfuServiceInitiator starter = new DfuServiceInitiator(deviceAddress)
-			.setKeepBond(false)
-			.setForceDfu(false)
-			.setPacketsReceiptNotificationsEnabled(true)
-			.setPacketsReceiptNotificationsValue(10)
-			.setUnsafeExperimentalButtonlessServiceInSecureDfuEnabled(true)
-			.setDisableNotification(true);
-
-		starter.setZip(fileUriStr);
+				.setKeepBond(false)
+				.setForceDfu(false)
+				.setPacketsReceiptNotificationsEnabled(true)
+				.setPacketsReceiptNotificationsValue(10)
+				.setUnsafeExperimentalButtonlessServiceInSecureDfuEnabled(true)
+				.setForeground(false)
+				.setDisableNotification(true)
+				.setZip(fileUriStr);
 
 		starter.start(activity, DfuService.class);
 
@@ -152,8 +152,7 @@ public class NordicUpdate extends CordovaPlugin {
 		}
 
 		@Override
-		public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart,
-				int partsTotal) {
+		public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
 			Log.d(TAG, "sendDfuProgress: " + percent);
 
 			JSONObject json = new JSONObject();
